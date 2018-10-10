@@ -53,11 +53,6 @@ done:
 	return error;
 }
 
-static void tree_reader_free(git_reader *_reader)
-{
-	GIT_UNUSED(_reader);
-}
-
 int git_reader_for_tree(git_reader **out, git_tree *tree)
 {
 	tree_reader *reader;
@@ -68,7 +63,6 @@ int git_reader_for_tree(git_reader **out, git_tree *tree)
 	GITERR_CHECK_ALLOC(reader);
 
 	reader->reader.read = tree_reader_read;
-	reader->reader.free = tree_reader_free;
 	reader->tree = tree;
 
 	*out = (git_reader *)reader;
@@ -130,11 +124,6 @@ done:
 	return error;
 }
 
-static void workdir_reader_free(git_reader *_reader)
-{
-	GIT_UNUSED(_reader);
-}
-
 int git_reader_for_workdir(
 	git_reader **out,
 	git_repository *repo,
@@ -149,7 +138,6 @@ int git_reader_for_workdir(
 	GITERR_CHECK_ALLOC(reader);
 
 	reader->reader.read = workdir_reader_read;
-	reader->reader.free = workdir_reader_free;
 	reader->repo = repo;
 
 	if (validate_index &&
@@ -197,11 +185,6 @@ done:
 	return error;
 }
 
-static void index_reader_free(git_reader *_reader)
-{
-	GIT_UNUSED(_reader);
-}
-
 int git_reader_for_index(
 	git_reader **out,
 	git_repository *repo,
@@ -216,7 +199,6 @@ int git_reader_for_index(
 	GITERR_CHECK_ALLOC(reader);
 
 	reader->reader.read = index_reader_read;
-	reader->reader.free = index_reader_free;
 	reader->repo = repo;
 
 	if (index) {
@@ -248,6 +230,5 @@ void git_reader_free(git_reader *reader)
 	if (!reader)
 		return;
 
-	reader->free(reader);
 	git__free(reader);
 }
