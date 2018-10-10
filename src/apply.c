@@ -713,12 +713,19 @@ int git_apply(
 	 * in `--cached` or `--index` mode, we apply to the contents already
 	 * in the index.
 	 */
-	if (location == GIT_APPLY_LOCATION_BOTH)
+	switch (location) {
+	case GIT_APPLY_LOCATION_BOTH:
 		error = git_reader_for_workdir(&pre_reader, repo, true);
-	else if (location == GIT_APPLY_LOCATION_INDEX)
+		break;
+	case GIT_APPLY_LOCATION_INDEX:
 		error = git_reader_for_index(&pre_reader, repo, NULL);
-	else
+		break;
+	case GIT_APPLY_LOCATION_WORKDIR:
 		error = git_reader_for_workdir(&pre_reader, repo, false);
+		break;
+	default:
+		abort();
+	}
 
 	if (error < 0)
 		goto done;
