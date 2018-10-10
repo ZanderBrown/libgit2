@@ -467,6 +467,17 @@ static int apply_one(
 		if (error < 0)
 			goto done;
 
+		/*
+		 * We need to populate the preimage data structure with the
+		 * contents that we are using as the preimage for this file.
+		 * This allows us to apply patches to files that have been
+		 * modified in the working directory.  During checkout,
+		 * we will use this expected preimage as the baseline, and
+		 * limit checkout to only the paths affected by patch
+		 * application.  (Without this, we would fail to write the
+		 * postimage contents to any file that had been modified
+		 * from HEAD on-disk, even if the patch application succeeded.)
+		 */
 		if (preimage) {
 			memset(&pre_entry, 0, sizeof(git_index_entry));
 			pre_entry.path = delta->old_file.path;
