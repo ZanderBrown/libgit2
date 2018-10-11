@@ -94,6 +94,11 @@ static int workdir_reader_read(
 		git_repository_workdir(reader->repo), filename)) < 0)
 		goto done;
 
+	/*
+	 * Patch application - for example - uses the filtered version of
+	 * the working directory data to match git.  So we will run the
+	 * workdir -> ODB filter on the contents in this workdir reader.
+	 */
 	if ((error = git_filter_list_load(&filters, reader->repo, NULL, filename,
 		GIT_FILTER_TO_ODB, GIT_FILTER_DEFAULT)) < 0)
 		goto done;
