@@ -750,10 +750,19 @@ int git_apply(
 			goto done;
 	}
 
-	if (location == GIT_APPLY_LOCATION_INDEX)
-		error = git_apply__to_index(repo, diff, preimage, postimage, &opts);
-	else
+	switch (location) {
+	case GIT_APPLY_LOCATION_BOTH:
 		error = git_apply__to_workdir(repo, diff, preimage, postimage, location, &opts);
+		break;
+	case GIT_APPLY_LOCATION_INDEX:
+		error = git_apply__to_index(repo, diff, preimage, postimage, &opts);
+		break;
+	case GIT_APPLY_LOCATION_WORKDIR:
+		error = git_apply__to_workdir(repo, diff, preimage, postimage, location, &opts);
+		break;
+	default:
+		abort();
+	}
 
 	if (error < 0)
 		goto done;
